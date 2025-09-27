@@ -14,13 +14,13 @@ Proyek ini adalah implementasi web modern dari permainan klasik Tic Tac Toe seba
 - **Sistem Papan Skor**: Melacak skor kemenangan untuk setiap pemain secara *real-time*.
 - **Penyimpanan Skor (localStorage)**: Skor permainan akan tersimpan di browser, sehingga tidak akan hilang meskipun halaman di-refresh atau ditutup.
 - **Animasi Garis Kemenangan**: Memberikan umpan balik visual yang jelas saat salah satu pemain memenangkan permainan.
+- **Fungsi Reset Ganda**: Tombol "Reset Game" untuk memulai ulang papan permainan, dan tombol "Reset Skor" terpisah untuk menghapus seluruh data skor yang tersimpan.
 - **Desain Responsif**: Antarmuka pengguna dirancang agar nyaman digunakan di berbagai perangkat.
 
 ## Instruksi Pengaturan
 1.  **Clone repositori ini:**
     ```sh
     git clone https://github.com/ofikur/tictactoe-capstone-project.git
-    ```
 
 2.  **Masuk ke direktori proyek:**
     ```sh
