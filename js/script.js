@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const statusText = document.getElementById('statusText');
     const resetButton = document.getElementById('resetButton');
+    const resetScoreButton = document.getElementById('resetScoreButton');
     const cells = document.querySelectorAll('.cell');
     const playerXScoreDisplay = document.getElementById('playerXScore');
     const playerOScoreDisplay = document.getElementById('playerOScore');
@@ -14,10 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPlayer = "X";
     let gameState = ["", "", "", "", "", "", "", "", ""];
     let gameMode = "pvp";
-    let scores = { x: 0, o: 0 };
+    let scores = {
+        pvp: { x: 0, o: 0 },
+        pva: { x: 0, o: 0 }
+    };
     
-    let resetTimer;
-
     const winningConditions = [
         { combo: [0, 1, 2], class: "h1" }, { combo: [3, 4, 5], class: "h2" }, { combo: [6, 7, 8], class: "h3" },
         { combo: [0, 3, 6], class: "v1" }, { combo: [1, 4, 7], class: "v2" }, { combo: [2, 5, 8], class: "v3" },
@@ -33,13 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const savedScores = JSON.parse(localStorage.getItem('ticTacToeScores'));
         const savedMode = localStorage.getItem('ticTacToeGameMode');
 
-        if (savedScores) {
+        if (savedScores && savedScores.pvp && savedScores.pva) {
             scores = savedScores;
         }
         if (savedMode) {
             gameMode = savedMode;
-            updatePlayerLabels();
         }
+        
+        updatePlayerLabels();
         updateScoreDisplay();
     }
 
@@ -52,15 +55,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateScoreDisplay() {
-        playerXScoreDisplay.textContent = scores.x;
-        playerOScoreDisplay.textContent = scores.o;
+        playerXScoreDisplay.textContent = scores[gameMode].x;
+        playerOScoreDisplay.textContent = scores[gameMode].o;
     }
 
     function startGame(mode) {
         gameActive = true;
         gameMode = mode;
         modeSelection.style.display = 'none';
+        
         updatePlayerLabels();
+        updateScoreDisplay();
+        
         statusText.textContent = `Giliran Pemain ${currentPlayer}`;
     }
 
@@ -132,14 +138,20 @@ document.addEventListener('DOMContentLoaded', () => {
         modeSelection.style.display = 'flex';
         winningLine.className = "winning-line";
         
-        updatePlayerLabels();
         pvaButton.classList.remove('active');
         pvpButton.classList.remove('active');
     }
 
+    function handleResetScores() {
+        scores = { pvp: { x: 0, o: 0 }, pva: { x: 0, o: 0 } };
+        saveData();
+        updateScoreDisplay();
+        alert("Skor telah direset!");
+    }
+
     function updateScores() {
-        if (currentPlayer === 'X') scores.x++;
-        if (currentPlayer === 'O') scores.o++;
+        if (currentPlayer === 'X') scores[gameMode].x++;
+        if (currentPlayer === 'O') scores[gameMode].o++;
         updateScoreDisplay();
         saveData();
     }
@@ -193,25 +205,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return false;
     }
 
-    resetButton.addEventListener('mousedown', () => {
-        resetTimer = setTimeout(() => {
-            scores = { x: 0, o: 0 };
-            saveData();
-            updateScoreDisplay();
-            resetButton.textContent = "Skor Direset!";
-            setTimeout(() => { resetButton.textContent = "Reset Game"; }, 1500);
-        }, 2000);
-    });
-
-    resetButton.addEventListener('mouseup', () => {
-        clearTimeout(resetTimer);
-    });
-     resetButton.addEventListener('mouseleave', () => {
-        clearTimeout(resetTimer);
-    });
-
     cells.forEach(cell => cell.addEventListener('click', handleCellClick));
     resetButton.addEventListener('click', handleResetGame);
+    resetScoreButton.addEventListener('click', handleResetScores);
+    
     pvaButton.addEventListener('click', () => {
         pvpButton.classList.remove('active');
         pvaButton.classList.add('active');
